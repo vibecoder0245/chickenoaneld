@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 3.9%; /* Dark background: hsl(0, 0%, 3.9%) */
+    --foreground: 0 0% 98%; /* Light text: hsl(0, 0%, 98%) */
+
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+
+    --radius: 0.75rem;
+
+    /* Brand color (example: Vercel Blue) */
+    --brand: 210 100% 56%; /* A vibrant blue, adjust as needed */
+    --brand-light: 210 100% 66%; /* Lighter shade for gradient */
+    --brand-dark: 210 100% 46%; /* Darker shade for gradient hover */
+    --brand-foreground: 0 0% 100%; /* White text on brand color */
+
+    --header-height: 80px; /* Define header height variable */
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 14.9%;
+
+    /* Brand color for dark mode (can be same or different) */
+    --brand: 210 100% 56%;
+    --brand-light: 210 100% 66%;
+    --brand-dark: 210 100% 46%;
+    --brand-foreground: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom scrollbar (optional, for a more polished look) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-neutral-800/50;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral-700/80;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-neutral-600;
+}
+
+/* Ensure the body takes full height for sticky footer or full-page backgrounds */
+html,
+body,
+#__next {
+  height: 100%;
+}
+body {
+  font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1; /* Enable OpenType features for Geist */
+}
+
+/* Styling for the marquee animation from the snippets */
+/* The animation itself is defined in tailwind.config.js */
+/* The snippet uses [--gap:1rem] and [--duration:30s] which are CSS variables */
+/* These can be set inline in the style attribute of the marquee container */
+
+/* Ensure the background is consistently dark for the page */
+body {
+  background-color: hsl(var(--background)); /* Or your specific dark color e.g. #0A0A0A or neutral-950 */
+}
+
+.bg-gradient-radial {
+  background-image: radial-gradient(ellipse at center, var(--tw-gradient-stops));
+}
+
+/* For the animated beams background */
+.beams-mask-image {
+  mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 70%);
+}
+
+/* For the animated stats component */
+.counter-value {
+  font-variant-numeric: tabular-nums;
+}
+
+/* For the glowing border button on Discord page */
+@keyframes glowing-border {
+  0% {
+    border-color: hsl(var(--brand) / 0.8);
+    box-shadow: 0 0 5px hsl(var(--brand) / 0.6), inset 0 0 5px hsl(var(--brand) / 0.5);
+  }
+  50% {
+    border-color: hsl(var(--brand) / 1);
+    box-shadow: 0 0 20px hsl(var(--brand) / 0.8), inset 0 0 10px hsl(var(--brand) / 0.7);
+  }
+  100% {
+    border-color: hsl(var(--brand) / 0.8);
+    box-shadow: 0 0 5px hsl(var(--brand) / 0.6), inset 0 0 5px hsl(var(--brand) / 0.5);
+  }
+}
+
+.animate-glowing-border {
+  animation: glowing-border 3s infinite ease-in-out;
+}
+
+/* For the button shimmer effect on homepage CTA */
+@keyframes button-shimmer-kf {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+.animate-button-shimmer {
+  animation: button-shimmer-kf 3s infinite linear;
+}
