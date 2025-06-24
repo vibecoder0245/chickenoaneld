@@ -3,7 +3,7 @@
    Simple server component that shows live stock for BOTH providers
    --------------------------------------------------------------------- */
 
-import { getUnifiedStock } from "@/lib/stockService"
++ import { getLiveStock } from "@/lib/stockService";
 import { Package, CheckCircle2, AlertTriangle } from "lucide-react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
