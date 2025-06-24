@@ -1,24 +1,48 @@
-// app/admin/audit-log/page.tsx
-import { Metadata } from "next"
+/* app/admin/audit/page.tsx
+   Displays the 50 most-recent AuditLog rows. */
 
-export const metadata: Metadata = {
-  title: "Audit Log · Admin",
-  description: "View recent administrative activity",
-}
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
 
-export default function AuditLogPage() {
+export const dynamic = "force-dynamic"; // no cache – always fresh
+
+export default async function AuditLogPage() {
+  /* ───────── Auth guard ───────── */
+  const session = await getServerSession(authOptions);
+  if (!session?.user) redirect("/admin/login?callbackUrl=/admin/audit");
+
+  /* ───────── Fetch logs ───────── */
+  const logs = await prisma.auditLog.findMany({
+    take: 50,
+    orderBy: { createdAt: "desc" },
+    include: { user: { select: { email: true } } },
+  });
+
+  /* ───────── UI ───────── */
   return (
-    <section className="p-6 space-y-4">
-      <h1 className="text-3xl font-semibold">Audit Log</h1>
+    <main className="p-6 space-y-6">
+      <h1 className="text-2xl font-semibold">Audit Log</h1>
 
-      <p className="text-muted-foreground">
-        This page will show a chronological list of actions (stock changes,
-        user edits, settings updates, etc.).
-      </p>
-
-      <div className="rounded-md border border-dashed p-8 text-center">
-        <p className="text-sm">📜 TODO: audit log table / timeline.</p>
-      </div>
-    </section>
-  )
+      {logs.length === 0 ? (
+        <p className="text-muted-foreground">No activity yet.</p>
+      ) : (
+        <ul className="divide-y border rounded-lg">
+          {logs.map((log) => (
+            <li key={log.id} className="p-4 flex flex-col gap-1">
+              <span>{log.action}</span>
+              <span className="text-xs text-muted-foreground">
+                {log.user?.email ?? "system"} •{" "}
+                {log.createdAt.toLocaleString(undefined, {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                })}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </main>
+  );
 }
