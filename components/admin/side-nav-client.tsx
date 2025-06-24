@@ -3,55 +3,70 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { PackagePlus, Users, ScrollText, type LucideIcon } from "lucide-react"
+import {
+  PackagePlus,
+  Users,
+  ScrollText,
+  type LucideIcon,
+} from "lucide-react"
 
-type UserRole = "STAFF" | "ADMIN" | "SUPER_ADMIN" | "OWNER" // Ensure this matches your actual roles
+/* ----------------------------------------------------------------– */
+/*  1.  ROLES & NAV ITEM TYPES                                        */
+/* ----------------------------------------------------------------– */
+
+type UserRole = "STAFF" | "ADMIN" | "SUPER_ADMIN" | "OWNER"
 
 interface NavItem {
   href: string
   label: string
   icon: LucideIcon
-  minRole?: UserRole // Role required to see this item
-  exactRole?: UserRole // Specific role required
+  minRole?: UserRole   // minimum role allowed
+  exactRole?: UserRole // show ONLY for this exact role
 }
 
 interface SideNavClientProps {
   userRole: UserRole
 }
 
+/* ----------------------------------------------------------------– */
+/*  2.  NAVIGATION CONFIG                                             */
+/* ----------------------------------------------------------------– */
+
 const navItems: NavItem[] = [
-  { href: "/admin/restock", label: "Restock", icon: PackagePlus },
-  { href: "/admin/users", label: "Users", icon: Users, minRole: "SUPER_ADMIN" },
-  { href: "/admin/audit", label: "Audit Log", icon: ScrollText, exactRole: "OWNER" },
+  { href: "/admin/restock", label: "Restock",   icon: PackagePlus },
+  { href: "/admin/users",   label: "Users",     icon: Users,      minRole: "SUPER_ADMIN" },
+  { href: "/admin/audit-log", label: "Audit Log", icon: ScrollText, exactRole: "OWNER" },
 ]
 
-// Helper to check role hierarchy
-const hasMinimumRole = (userRole: UserRole, minRole: UserRole): boolean => {
-  const rolesHierarchy: UserRole[] = ["STAFF", "ADMIN", "SUPER_ADMIN", "OWNER"]
-  return rolesHierarchy.indexOf(userRole) >= rolesHierarchy.indexOf(minRole)
-}
+const rolesHierarchy: UserRole[] = ["STAFF", "ADMIN", "SUPER_ADMIN", "OWNER"]
+const hasMinimumRole = (user: UserRole, min: UserRole) =>
+  rolesHierarchy.indexOf(user) >= rolesHierarchy.indexOf(min)
+
+/* ----------------------------------------------------------------– */
+/*  3.  COMPONENT                                                     */
+/* ----------------------------------------------------------------– */
 
 export function SideNavClient({ userRole }: SideNavClientProps) {
   const pathname = usePathname()
 
-  const filteredNavItems = navItems.filter((item) => {
-    if (item.exactRole) return userRole === item.exactRole
-    if (item.minRole) return hasMinimumRole(userRole, item.minRole)
-    return true // No role restriction
+  const visibleItems = navItems.filter((item) => {
+    if (item.exactRole)   return userRole === item.exactRole
+    if (item.minRole)     return hasMinimumRole(userRole, item.minRole)
+    return true
   })
 
   return (
     <nav className="flex flex-col gap-2">
-      {filteredNavItems.map((item) => (
+      {visibleItems.map(({ href, label, icon: Icon }) => (
         <Button
-          key={item.href}
-          variant={pathname === item.href ? "secondary" : "ghost"}
+          key={href}
+          variant={pathname === href ? "secondary" : "ghost"}
           className="w-full justify-start"
           asChild
         >
-          <Link href={item.href}>
-            <item.icon className="mr-2 h-4 w-4" />
-            {item.label}
+          <Link href={href}>
+            <Icon className="mr-2 h-4 w-4" />
+            {label}
           </Link>
         </Button>
       ))}
