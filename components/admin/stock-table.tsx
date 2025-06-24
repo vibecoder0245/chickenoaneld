@@ -3,7 +3,7 @@
    Simple server component that shows live stock for BOTH providers
    --------------------------------------------------------------------- */
 
-import { getLiveStock } from "@/lib/stockService";
+import { getLiveStock }   from "@/lib/stockService";
 import { Package, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
@@ -19,7 +19,7 @@ function formatRows(stock: Record<string, number>): Row[] {
 
 export default async function StockTable() {
   /* ---------- 1. Get live data (no-store) ---------------------------- */
-  const stock = await getUnifiedStock()      // { "EDP-123": 54, "SA-92": 12 }
+  const stock = await getLiveStock();         // { "EDP-123": 54, "SA-92": 12 }
   const rows  = formatRows(stock)
 
   /* ---------- 2.  Little helpers for UI ----------------------------- */
