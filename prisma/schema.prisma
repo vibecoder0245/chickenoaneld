@@ -1,6 +1,8 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-3.0.x"] // good for Vercel
+  // “native” for local dev, “debian-openssl-3.0.x” is what Vercel’s
+  // serverless functions run on
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -8,11 +10,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/* ────────────────────────────────────────────── */
+/*  USER                                         */
+/* ────────────────────────────────────────────── */
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   password  String?
-  role      String?
+  role      String?               // "STAFF" | "ADMIN" | "SUPER_ADMIN" | "OWNER"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  /* relation to AuditLog */
+  auditLogs AuditLog[]
+}
+
+/* ────────────────────────────────────────────── */
+/*  AUDIT LOG                                    */
+/* ────────────────────────────────────────────── */
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  createdAt DateTime @default(now())
+
+  /* — optional reference to the user who performed the action — */
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
 }
